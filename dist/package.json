@@ -10,6 +10,7 @@
         "format": "prettier --write .",
         "format:check": "prettier --check ."
     },
+    "type": "module",
     "keywords": [],
     "author": "",
     "license": "ISC",

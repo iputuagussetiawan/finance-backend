@@ -20,4 +20,3 @@ const envConfig = () => ({
     FRONTEND_ORIGIN: (0, get_env_1.getEnv)("FRONTEND_ORIGIN", "localhost"),
 });
 exports.Env = envConfig();
-//# sourceMappingURL=env.config.js.map

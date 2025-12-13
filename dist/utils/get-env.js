@@ -12,4 +12,3 @@ const getEnv = (key, defaultValue) => {
     return value;
 };
 exports.getEnv = getEnv;
-//# sourceMappingURL=get-env.js.map
