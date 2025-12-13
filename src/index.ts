@@ -5,6 +5,8 @@ import cors from 'cors';
 import { HTTPSTATUS } from './config/http.config';
 import { error } from 'console';
 import { errorHandler } from './middlewares/errorHandler.middleware';
+import { BadRequestException } from './utils/app-error';
+import { asyncHandler } from './middlewares/asyncHandler.middlerware';
 
 const app = express();
 const BASE_PATH = Env.BASE_PATH;
@@ -19,10 +21,13 @@ app.use(
     })
 );
 
-app.get('/', (req: Request, res: Response, next: NextFunction) => {
-    throw new Error('Test Error Handling');
-    res.status(HTTPSTATUS.OK).json({ message: 'API is running' });
-});
+app.get(
+    '/',
+    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+        throw new BadRequestException('This is a bad request example');
+        res.status(HTTPSTATUS.OK).json({ message: 'API is running' });
+    })
+);
 
 app.use(errorHandler);
 
