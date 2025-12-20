@@ -11,7 +11,7 @@ import {
     duplicateTransactionService,
     getAllTransactionService,
     getTransactionByIdService,
-    scanReceiptService,
+    // scanReceiptService,
     updateTransactionService,
 } from '../services/transaction.service';
 import {
@@ -127,13 +127,13 @@ export const bulkTransactionController = asyncHandler(async (req: Request, res: 
     });
 });
 
-export const scanReceiptController = asyncHandler(async (req: Request, res: Response) => {
-    const file = req?.file;
+// export const scanReceiptController = asyncHandler(async (req: Request, res: Response) => {
+//     const file = req?.file;
 
-    const result = await scanReceiptService(file);
+//     const result = await scanReceiptService(file);
 
-    return res.status(HTTPSTATUS.OK).json({
-        message: 'Reciept scanned successfully',
-        data: result,
-    });
-});
+//     return res.status(HTTPSTATUS.OK).json({
+//         message: 'Reciept scanned successfully',
+//         data: result,
+//     });
+// });

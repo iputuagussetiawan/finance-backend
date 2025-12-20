@@ -35,52 +35,77 @@ export const createTransactionService = async (body: CreateTransactionType, user
 };
 
 export const getAllTransactionService = async (
+    // ID of the user whose transactions will be fetched
     userId: string,
+
+    // Filter options object
     filters: {
-        keyword?: string;
-        type?: keyof typeof TransactionTypeEnum;
-        recurringStatus?: 'RECURRING' | 'NON_RECURRING';
+        keyword?: string; // Search keyword for title or category
+        type?: keyof typeof TransactionTypeEnum; // Transaction type (enum key)
+        recurringStatus?: 'RECURRING' | 'NON_RECURRING'; // Recurring filter
     },
+
+    // Pagination configuration
     pagination: {
-        pageSize: number;
-        pageNumber: number;
+        pageSize: number; // Number of items per page
+        pageNumber: number; // Current page number
     }
 ) => {
+    // Destructure filter values for easier usage
     const { keyword, type, recurringStatus } = filters;
 
+    // Base filter condition, always scoped to the user
     const filterConditions: Record<string, any> = {
         userId,
     };
 
+    // If keyword exists, add OR condition for title or category search (case-insensitive)
     if (keyword) {
         filterConditions.$or = [
-            { title: { $regex: keyword, $options: 'i' } },
-            { category: { $regex: keyword, $options: 'i' } },
+            { title: { $regex: keyword, $options: 'i' } }, // Match title
+            { category: { $regex: keyword, $options: 'i' } }, // Match category
         ];
     }
 
+    // If transaction type filter is provided, apply it
     if (type) {
         filterConditions.type = type;
     }
 
+    // If recurring status filter is provided
     if (recurringStatus) {
+        // Show only recurring transactions
         if (recurringStatus === 'RECURRING') {
             filterConditions.isRecurring = true;
-        } else if (recurringStatus === 'NON_RECURRING') {
+        }
+        // Show only non-recurring transactions
+        else if (recurringStatus === 'NON_RECURRING') {
             filterConditions.isRecurring = false;
         }
     }
 
+    // Extract pagination values
     const { pageSize, pageNumber } = pagination;
+
+    // Calculate how many records to skip for pagination
     const skip = (pageNumber - 1) * pageSize;
 
+    // Run both queries in parallel:
+    // 1. Get paginated transactions
+    // 2. Count total matching documents
     const [transactions, totalCount] = await Promise.all([
-        TransactionModel.find(filterConditions).skip(skip).limit(pageSize).sort({ createdAt: -1 }),
-        TransactionModel.countDocuments(filterConditions),
+        TransactionModel.find(filterConditions) // Apply filters
+            .skip(skip) // Skip records for pagination
+            .limit(pageSize) // Limit number of records
+            .sort({ createdAt: -1 }), // Sort by newest first
+
+        TransactionModel.countDocuments(filterConditions), // Count total results
     ]);
 
+    // Calculate total number of pages
     const totalPages = Math.ceil(totalCount / pageSize);
 
+    // Return transactions and pagination metadata
     return {
         transactions,
         pagination: {

@@ -62,7 +62,7 @@ export const bulkTransactionSchema = z.object({
                     return !isNaN(amount) && amount > 0 && amount <= 1_000_000_000;
                 }),
             {
-                message: 'Amount must be a postive number',
+                message: 'Amount must be a positive number',
             }
         ),
 });

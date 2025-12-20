@@ -7,7 +7,7 @@ import {
     duplicateTransactionController,
     getAllTransactionController,
     getTransactionByIdController,
-    scanReceiptController,
+    // scanReceiptController,
     updateTransactionController,
 } from '../controllers/transaction.controller';
 // import { upload } from '../config/cloudinary.config';
