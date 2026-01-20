@@ -7,18 +7,17 @@ import {
     duplicateTransactionController,
     getAllTransactionController,
     getTransactionByIdController,
-    // scanReceiptController,
+    scanReceiptController,
     updateTransactionController,
 } from '../controllers/transaction.controller';
-// import { upload } from '../config/cloudinary.config';
+import { upload } from '../config/cloudinary.config';
 
 const transactionRoutes = Router();
 
 transactionRoutes.post('/create', createTransactionController);
-
-// transactionRoutes.post('/scan-receipt', upload.single('receipt'), scanReceiptController);
-
 transactionRoutes.post('/bulk-transaction', bulkTransactionController);
+
+transactionRoutes.post('/scan-receipt', upload.single('receipt'), scanReceiptController);
 
 transactionRoutes.put('/duplicate/:id', duplicateTransactionController);
 transactionRoutes.put('/update/:id', updateTransactionController);
