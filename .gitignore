@@ -2,5 +2,9 @@
 node_modules/
 
 .env
+<<<<<<< HEAD
 .env.local
 .env.*
+=======
+.env.*
+>>>>>>> 02-transaction
