@@ -38,7 +38,6 @@ app.get(
     })
 );
 
-
 startJobs();
 app.use(`${BASE_PATH}/auth`, authRoutes);
 app.use(`${BASE_PATH}/user`, passportAuthenticateJwt, userRoutes);
@@ -48,7 +47,7 @@ app.use(errorHandler);
 
 app.listen(Env.PORT, async () => {
     await connectDatabase();
-    if(Env.NODE_ENV==="development"){
+    if (Env.NODE_ENV === 'development') {
         await initializeCrons();
     }
     console.log(`Server is running on port ${Env.PORT}`);
