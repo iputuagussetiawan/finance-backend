@@ -15,6 +15,8 @@ import userRoutes from './routes/user.route';
 import transactionRoutes from './routes/transaction.route';
 import { startJobs } from './cron/scheduler';
 import { initializeCrons } from './cron';
+import reportRoutes from './routes/report.route';
+import { calculateNextReportDate } from './utils/helper';
 
 const app = express();
 const BASE_PATH = Env.BASE_PATH;
@@ -36,18 +38,16 @@ app.get(
         throw new BadRequestException('This is a test error');
     })
 );
-
-
 startJobs();
 app.use(`${BASE_PATH}/auth`, authRoutes);
 app.use(`${BASE_PATH}/user`, passportAuthenticateJwt, userRoutes);
 app.use(`${BASE_PATH}/transaction`, passportAuthenticateJwt, transactionRoutes);
-
+app.use(`${BASE_PATH}/report`, passportAuthenticateJwt, reportRoutes);
 app.use(errorHandler);
 
 app.listen(Env.PORT, async () => {
     await connectDatabase();
-    if(Env.NODE_ENV==="development"){
+    if (Env.NODE_ENV === 'development') {
         await initializeCrons();
     }
     console.log(`Server is running on port ${Env.PORT}`);
