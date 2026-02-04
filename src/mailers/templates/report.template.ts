@@ -1,40 +1,37 @@
-
-import type { ReportType } from "../../@types/report.type";
-import { formatCurrency } from "../../utils/format-currency";
-import { capitalizeFirstLetter } from "../../utils/helper";
+import type { ReportType } from '../../@types/report.type';
+import { formatCurrency } from '../../utils/format-currency';
+import { capitalizeFirstLetter } from '../../utils/helper';
 
 export const getReportEmailTemplate = (
-  reportData: ReportType & { username: string },
-  frequency: string
+    reportData: ReportType & { username: string },
+    frequency: string
 ) => {
-  const {
-    username,
-    period,
-    totalIncome,
-    totalExpenses,
-    availableBalance,
-    savingsRate,
-    topSpendingCategories,
-    insights,
-  } = reportData;
+    const {
+        username,
+        period,
+        totalIncome,
+        totalExpenses,
+        availableBalance,
+        savingsRate,
+        topSpendingCategories,
+        insights,
+    } = reportData;
 
-  const reportTitle = `${capitalizeFirstLetter(frequency)} Report`;
+    const reportTitle = `${capitalizeFirstLetter(frequency)} Report`;
 
-  const categoryList = topSpendingCategories
-    .map(
-      (cat: any) => `<li>
+    const categoryList = topSpendingCategories
+        .map(
+            (cat: any) => `<li>
       ${cat.name} - ${formatCurrency(cat.amount)} (${cat.percent}%)
       </li>
     `
-    )
-    .join("");
+        )
+        .join('');
 
-  const insightsList = insights
-    .map((insight: string) => `<li>${insight}</li>`)
-    .join("");
+    const insightsList = insights.map((insight: string) => `<li>${insight}</li>`).join('');
 
-  const currentYear = new Date().getFullYear();
-  return `
+    const currentYear = new Date().getFullYear();
+    return `
   <!DOCTYPE html>
  <html lang="en">
    <head>
