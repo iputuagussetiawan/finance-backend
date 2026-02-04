@@ -8,7 +8,11 @@
         "build": "tsc && cp ./package.json ./dist",
         "start": "node dist/index.js",
         "format": "prettier --write .",
-        "format:check": "prettier --check ."
+        "format:check": "prettier --check .",
+        "prepare": "husky"
+    },
+    "lint-staged": {
+        "**/*": "prettier --write --ignore-unknown"
     },
     "keywords": [],
     "author": "",
@@ -47,6 +51,8 @@
         "@types/node-cron": "^3.0.11",
         "@types/passport": "^1.0.17",
         "@types/passport-jwt": "^4.0.1",
+        "husky": "^9.1.7",
+        "lint-staged": "^16.2.7",
         "prettier": "^3.7.4",
         "ts-node-dev": "^2.0.0",
         "typescript": "^5.8.3"
