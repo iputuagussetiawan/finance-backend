@@ -23,6 +23,12 @@ const envConfig = () => ({
     RESEND_MAILER_SENDER: getEnv('RESEND_MAILER_SENDER', ''),
 
     FRONTEND_ORIGIN: getEnv('FRONTEND_ORIGIN', 'localhost'),
+
+    STRIPE_SECRET_KEY: getEnv('STRIPE_SECRET_KEY'),
+    STRIPE_MONTHLY_PLAN_PRICE_ID: getEnv('STRIPE_MONTHLY_PLAN_PRICE_ID'),
+    STRIPE_YEARLY_PLAN_PRICE_ID: getEnv('STRIPE_YEARLY_PLAN_PRICE_ID'),
+    STRIPE_WEBHOOK_SECRET: getEnv('STRIPE_WEBHOOK_SECRET'),
+    TRIAL_DAYS: getEnv('TRIAL_DAYS', '7') as string,
 });
 
 export const Env = envConfig();

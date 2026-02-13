@@ -6,6 +6,8 @@ export interface UserDocument extends Document {
     email: string;
     password: string;
     profilePicture: string | null;
+    subscriptionId: mongoose.Types.ObjectId;
+    stripeCustomerId?: string;
     createdAt: Date;
     updatedAt: Date;
     comparePassword: (password: string) => Promise<boolean>;
@@ -34,6 +36,15 @@ const userSchema = new Schema<UserDocument>(
             type: String,
             select: true,
             required: true,
+        },
+
+        subscriptionId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Subscription',
+        },
+        stripeCustomerId: {
+            type: String,
+            default: null,
         },
     },
     {
