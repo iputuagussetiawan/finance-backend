@@ -1,5 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { compareValue, hashValue } from '../utils/bcrypt';
+import './subscription.model';
 
 export interface UserDocument extends Document {
     name: string;

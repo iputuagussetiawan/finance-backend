@@ -36,8 +36,9 @@ export const getUserSubscriptionStatusService = async (userId: string) => {
     const daysLeft = subscriptionDoc.trialEndsAt
         ? Math.max(
               0,
-              Math.ceil(subscriptionDoc.trialEndsAt.getTime() - now.getTime()) /
-                  (1000 * 60 * 60 * 24)
+              Math.ceil(
+                  (subscriptionDoc.trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+              )
           )
         : 0;
 
@@ -63,6 +64,7 @@ export const getUserSubscriptionStatusService = async (userId: string) => {
         trialDays: subscriptionDoc.trialDays,
         status: subscriptionDoc.status,
         daysLeft: isTrialActive ? daysLeft : 0,
+        planData,
     };
 
     return {

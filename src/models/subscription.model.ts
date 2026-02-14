@@ -70,6 +70,10 @@ const subscriptionSchema = new Schema<SubscriptionDocument>(
             type: String,
             enum: Object.values(SubscriptionPlanEnum),
         },
+        status: {
+            type: String,
+            enum: Object.values(SubscriptionStatus),
+        },
         upgradedAt: { type: Date, default: null },
         canceledAt: { type: Date, default: null },
         metadata: {
@@ -87,6 +91,6 @@ subscriptionSchema.methods.isTrialActive = function () {
     return new Date() < this.trialEndsAt;
 };
 
-const SubscriptionModel = mongoose.model<SubscriptionDocument>('subscription', subscriptionSchema);
+const SubscriptionModel = mongoose.model<SubscriptionDocument>('Subscription', subscriptionSchema);
 
 export default SubscriptionModel;

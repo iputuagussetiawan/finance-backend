@@ -110,7 +110,11 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
 
 async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
     console.log('Inside Invoice.payment_succeeded', `Amount:${invoice.amount_paid / 100}`);
+
     const subscriptionId = invoice.parent?.subscription_details?.subscription as string;
+    console.log('subscription Id', subscriptionId);
+    console.log(invoice.lines.data[0].parent?.subscription_item_details);
+
     if (!subscriptionId) return;
     const subscription = await stripeClient.subscriptions.retrieve(subscriptionId);
     const userId = subscription.metadata?.userId;

@@ -16,9 +16,10 @@ import {
 export const getUserSubscriptionStatusController = asyncHandler(
     async (req: Request, res: Response) => {
         const userId = req.user?._id;
-        await getUserSubscriptionStatusService(userId);
+        const { subscriptionData } = await getUserSubscriptionStatusService(userId);
         return res.status(HTTPSTATUS.OK).json({
             message: 'Subscription fetched successfully',
+            data: subscriptionData,
         });
     }
 );
