@@ -35,10 +35,15 @@ export const stripeWebhookHandler = async (req: Request, res: Response) => {
                 break;
 
             case 'customer.subscription.updated':
+                await handleCustomerSubscriptionUpdated(event.data.object as Stripe.Subscription);
                 break;
             case 'customer.subscription.deleted':
+                await handleCustomerSubscriptionDeleted(event.data.object as Stripe.Subscription);
                 break;
+            default:
+                console.log(`unhanled event type: ${event.type}`);
         }
+        return res.status(200);
     } catch (error: any) {}
 };
 
@@ -126,6 +131,68 @@ async function handleInvoicePaymentFailed(invoice: Stripe.Invoice) {
     );
 
     console.log(`Payment failed - user ${userId}`);
+}
+
+async function handleCustomerSubscriptionUpdated(stripeSubscription: Stripe.Subscription) {
+    console.log(`Inside customer.subscription.updated`, stripeSubscription.status);
+    const userId = stripeSubscription.metadata?.userId;
+
+    if (stripeSubscription.status === 'trialing') {
+        console.log('Skiping trialing subscirption');
+        return;
+    }
+
+    const priceId = stripeSubscription.items.data[0].price.id;
+    const plan = getPlan(stripeSubscription);
+
+    const currentSub = await SubscriptionModel.findOne({ userId });
+
+    if (!currentSub) return;
+    const isPlanSwitch = currentSub?.plan !== plan || currentSub.stripePriceId !== priceId;
+
+    if (isPlanSwitch && stripeSubscription.status === 'active') {
+        await SubscriptionModel.findByIdAndUpdate(
+            { userId },
+            {
+                $set: {
+                    plan,
+                    stripePriceId: priceId,
+                    stripeCurrentPeriodStart: new Date(
+                        stripeSubscription.items.data[0].current_period_start * 1000
+                    ),
+                    stripeCurrentPeriodEnd: new Date(
+                        stripeSubscription.items.data[0].current_period_end * 1000
+                    ),
+                },
+            },
+            { upsert: true }
+        );
+        console.log(`Plan switch - user ${userId} from ${currentSub?.plan} to ${plan}`);
+    } else {
+        console.log(`No Plan Switch detected for user ${userId}`);
+    }
+}
+
+async function handleCustomerSubscriptionDeleted(stripeSubscription: Stripe.Subscription) {
+    console.log(`Inside customer.subscription.deleted`, stripeSubscription.status);
+    const userId = stripeSubscription.metadata?.userId;
+
+    if (!userId) return;
+    const isTrialExpired = stripeSubscription.trial_end && stripeSubscription.status === 'canceled';
+
+    await SubscriptionModel.findByIdAndUpdate(
+        { userId },
+        {
+            $set: {
+                status: isTrialExpired
+                    ? SubscriptionStatus.TRIAL_EXPIRED
+                    : SubscriptionStatus.CANCELED,
+                ...(!isTrialExpired && { canceledAt: new Date() }),
+            },
+        }
+    );
+
+    console.log(`Subscription ${isTrialExpired ? 'trial expired' : 'canceled'} - User ${userId}`);
 }
 
 function getPlan(subscription: Stripe.Subscription) {

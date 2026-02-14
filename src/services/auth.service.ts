@@ -38,10 +38,13 @@ export const registerService = async (body: RegisterSchemaType) => {
             await newUser.save({ session });
 
             const _userId = newUser.id.toString();
+            const ONE_MINUTES_IN_SECONDS = 1 * 60;
+            const trialEndDate = Math.floor(Date.now() / 1000) + ONE_MINUTES_IN_SECONDS;
             const stripeSubscription = await stripeClient.subscriptions.create({
                 customer: customer.id,
                 items: [{ price: Env.STRIPE_MONTHLY_PLAN_PRICE_ID }],
-                trial_period_days: TRIAL_DAYS,
+                trial_end: trialEndDate,
+                // trial_period_days: TRIAL_DAYS,
                 trial_settings: {
                     end_behavior: {
                         missing_payment_method: 'cancel',
