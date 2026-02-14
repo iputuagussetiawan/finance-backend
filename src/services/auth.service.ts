@@ -62,7 +62,7 @@ export const registerService = async (body: RegisterSchemaType) => {
                 stripeSubscriptionId: stripeSubscription.id,
                 stripePriceId: stripeSubscription.items.data[0].price.id,
                 trialStartsAt: new Date(stripeSubscription.trial_start! * 1000),
-                trialEndAt: new Date(stripeSubscription.trial_end! * 1000),
+                trialEndsAt: new Date(stripeSubscription.trial_end! * 1000),
                 trialDays: TRIAL_DAYS,
             });
 

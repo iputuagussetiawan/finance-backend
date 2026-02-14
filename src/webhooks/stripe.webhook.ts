@@ -8,43 +8,72 @@ import SubscriptionModel, {
 } from '../models/subscription.model';
 
 export const stripeWebhookHandler = async (req: Request, res: Response) => {
-    const sig = req.headers['stripe-signature']!;
+    const sig = req.headers['stripe-signature'];
+
+    if (!sig) {
+        console.error('Missing stripe-signature header');
+        return res.status(400).send('Missing Stripe signature');
+    }
+
     let event: Stripe.Event;
 
     try {
+        // ⚠️ req.body must be raw (express.raw({ type: 'application/json' }))
         event = stripeClient.webhooks.constructEvent(req.body, sig, Env.STRIPE_WEBHOOK_SECRET);
     } catch (error: any) {
-        return res.status(400).send(`Webhook Error: ${error?.message}`);
+        console.error('Webhook signature verification failed:', error.message);
+        return res.status(400).send(`Webhook Error: ${error.message}`);
     }
 
     try {
         switch (event.type) {
-            case 'customer.subscription.trial_will_end':
-                console.log(
-                    `Trial will end foruser ${(event.data.object as Stripe.Subscription).metadata?.userId}`
-                );
+            case 'customer.subscription.trial_will_end': {
+                const subscription = event.data.object as Stripe.Subscription;
+                console.log(`Trial will end for user ${subscription.metadata?.userId}`);
                 break;
-            case 'checkout.session.completed':
-                await handleCheckoutSessionCompleted(event.data.object as Stripe.Checkout.Session);
-                break;
-            case 'invoice.payment_succeeded':
-                await handleInvoicePaymentSucceeded(event.data.object as Stripe.Invoice);
-                break;
-            case 'invoice.payment_failed':
-                await handleInvoicePaymentFailed(event.data.object as Stripe.Invoice);
-                break;
+            }
 
-            case 'customer.subscription.updated':
-                await handleCustomerSubscriptionUpdated(event.data.object as Stripe.Subscription);
+            case 'checkout.session.completed': {
+                const session = event.data.object as Stripe.Checkout.Session;
+                await handleCheckoutSessionCompleted(session);
                 break;
-            case 'customer.subscription.deleted':
-                await handleCustomerSubscriptionDeleted(event.data.object as Stripe.Subscription);
+            }
+
+            case 'invoice.payment_succeeded': {
+                const invoice = event.data.object as Stripe.Invoice;
+                await handleInvoicePaymentSucceeded(invoice);
                 break;
+            }
+
+            case 'invoice.payment_failed': {
+                const invoice = event.data.object as Stripe.Invoice;
+                await handleInvoicePaymentFailed(invoice);
+                break;
+            }
+
+            case 'customer.subscription.updated': {
+                const subscription = event.data.object as Stripe.Subscription;
+                await handleCustomerSubscriptionUpdated(subscription);
+                break;
+            }
+
+            case 'customer.subscription.deleted': {
+                const subscription = event.data.object as Stripe.Subscription;
+                await handleCustomerSubscriptionDeleted(subscription);
+                break;
+            }
+
             default:
-                console.log(`unhanled event type: ${event.type}`);
+                console.log(`Unhandled event type: ${event.type}`);
         }
-        return res.status(200);
-    } catch (error: any) {}
+
+        // ✅ Respond 200 after successful handling
+        return res.status(200).json({ received: true });
+    } catch (error: any) {
+        console.error('Error processing Stripe event:', error.message);
+        // ⚠ Respond 500 to Stripe; optionally retry webhook later
+        return res.status(500).send('Webhook handler error');
+    }
 };
 
 async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
@@ -81,7 +110,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
 
 async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
     console.log('Inside Invoice.payment_succeeded', `Amount:${invoice.amount_paid / 100}`);
-    const subscriptionId = invoice.lines.data[0]?.subscription as string;
+    const subscriptionId = invoice.parent?.subscription_details?.subscription as string;
     if (!subscriptionId) return;
     const subscription = await stripeClient.subscriptions.retrieve(subscriptionId);
     const userId = subscription.metadata?.userId;

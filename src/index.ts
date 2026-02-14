@@ -19,6 +19,7 @@ import reportRoutes from './routes/report.route';
 import { calculateNextReportDate } from './utils/helper';
 import analyticsRoutes from './routes/analytics.route';
 import billingRoutes from './routes/billing.route';
+import webhookRoutes from './routes/webhook.route';
 
 const app = express();
 const BASE_PATH = Env.BASE_PATH;
@@ -47,6 +48,7 @@ app.use(`${BASE_PATH}/transaction`, passportAuthenticateJwt, transactionRoutes);
 app.use(`${BASE_PATH}/report`, passportAuthenticateJwt, reportRoutes);
 app.use(`${BASE_PATH}/analytics`, passportAuthenticateJwt, analyticsRoutes);
 app.use(`${BASE_PATH}/billing`, passportAuthenticateJwt, billingRoutes);
+app.use('/webhook', webhookRoutes);
 app.use(errorHandler);
 
 app.listen(Env.PORT, async () => {
