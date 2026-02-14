@@ -209,7 +209,7 @@ export const swithToSubscriptionPlanService = async (
         payment_behavior: 'error_if_incomplete',
         metadata: {
             userId: user.id,
-            newPlan: newPlan,
+            newlan: newPlan,
         },
     });
 

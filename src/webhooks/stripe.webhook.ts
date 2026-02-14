@@ -153,7 +153,7 @@ async function handleInvoicePaymentFailed(invoice: Stripe.Invoice) {
     const userId = subscription.metadata?.userId;
     if (!userId) return;
 
-    await SubscriptionModel.findByIdAndUpdate(
+    await SubscriptionModel.findOneAndUpdate(
         { userId },
         {
             $set: {
@@ -184,7 +184,7 @@ async function handleCustomerSubscriptionUpdated(stripeSubscription: Stripe.Subs
     const isPlanSwitch = currentSub?.plan !== plan || currentSub.stripePriceId !== priceId;
 
     if (isPlanSwitch && stripeSubscription.status === 'active') {
-        await SubscriptionModel.findByIdAndUpdate(
+        await SubscriptionModel.findOneAndUpdate(
             { userId },
             {
                 $set: {
@@ -213,7 +213,7 @@ async function handleCustomerSubscriptionDeleted(stripeSubscription: Stripe.Subs
     if (!userId) return;
     const isTrialExpired = stripeSubscription.trial_end && stripeSubscription.status === 'canceled';
 
-    await SubscriptionModel.findByIdAndUpdate(
+    await SubscriptionModel.findOneAndUpdate(
         { userId },
         {
             $set: {
