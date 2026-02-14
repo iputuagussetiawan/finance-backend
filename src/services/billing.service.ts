@@ -131,9 +131,8 @@ export const manageSubscriptionBillingPortalService = async (
     userId: string,
     callbackUrl: string
 ) => {
-    if (!callbackUrl) {
-        throw new BadRequestException('Callback URL is required');
-    }
+    if (!userId) throw new BadRequestException('User ID is missing');
+    if (!callbackUrl) throw new BadRequestException('Callback URL is required');
 
     const user = await UserModel.findById(userId)
         .populate<{ subscriptionId: SubscriptionDocument }>('subscriptionId')
@@ -179,6 +178,8 @@ export const swithToSubscriptionPlanService = async (
         subscriptionId: SubscriptionDocument;
     }>('subscriptionId');
 
+    console.log(user);
+
     if (!user || !user.subscriptionId.stripeSubscriptionId) {
         throw new UnauthorizedException('you dont have an active subscription to switch');
     }
@@ -209,7 +210,7 @@ export const swithToSubscriptionPlanService = async (
         payment_behavior: 'error_if_incomplete',
         metadata: {
             userId: user.id,
-            newlan: newPlan,
+            plan: newPlan,
         },
     });
 

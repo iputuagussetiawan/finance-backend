@@ -12,6 +12,7 @@ import {
     switchToSubscriptionPlanSchema,
     upgradeToProSubscriptionSchema,
 } from '../validators/billing.validator';
+import { UnauthorizedException } from '../utils/app-error';
 
 export const getUserSubscriptionStatusController = asyncHandler(
     async (req: Request, res: Response) => {
@@ -38,7 +39,10 @@ export const upgradeToProSubscriptionController = asyncHandler(
 
 export const manageSubscriptionBillingPortalController = asyncHandler(
     async (req: Request, res: Response) => {
-        const userId = req.user?._id;
+        const userId = req.user?._id.toString();
+        if (!userId) {
+            throw new UnauthorizedException('User not authenticated');
+        }
         const body = manageSubscriptionBillingPortalSchema.parse(req.body);
         const url = await manageSubscriptionBillingPortalService(userId, body.callbackUrl);
         return res.status(HTTPSTATUS.OK).json({
