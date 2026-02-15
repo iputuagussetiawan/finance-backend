@@ -17,7 +17,7 @@ const envConfig = () => ({
     CLOUDINARY_API_SECRET: (0, get_env_1.getEnv)('CLOUDINARY_API_SECRET'),
     RESEND_API_KEY: (0, get_env_1.getEnv)('RESEND_API_KEY'),
     RESEND_MAILER_SENDER: (0, get_env_1.getEnv)('RESEND_MAILER_SENDER', ''),
-    FRONTEND_ORIGIN: (0, get_env_1.getEnv)('FRONTEND_ORIGIN', 'localhost'),
+    FRONTEND_ORIGIN: (0, get_env_1.getEnv)('FRONTEND_ORIGIN'),
     STRIPE_SECRET_KEY: (0, get_env_1.getEnv)('STRIPE_SECRET_KEY'),
     STRIPE_MONTHLY_PLAN_PRICE_ID: (0, get_env_1.getEnv)('STRIPE_MONTHLY_PLAN_PRICE_ID'),
     STRIPE_YEARLY_PLAN_PRICE_ID: (0, get_env_1.getEnv)('STRIPE_YEARLY_PLAN_PRICE_ID'),

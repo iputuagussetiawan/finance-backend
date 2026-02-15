@@ -11,7 +11,6 @@ const express_1 = __importDefault(require('express'));
 const env_config_1 = require('./config/env.config');
 const cors_1 = __importDefault(require('cors'));
 const errorHandler_middleware_1 = require('./middlewares/errorHandler.middleware');
-const app_error_1 = require('./utils/app-error');
 const asyncHandler_middlerware_1 = require('./middlewares/asyncHandler.middlerware');
 const database_config_1 = __importDefault(require('./config/database.config'));
 const passport_1 = __importDefault(require('passport'));
@@ -26,6 +25,17 @@ const analytics_route_1 = __importDefault(require('./routes/analytics.route'));
 const billing_route_1 = __importDefault(require('./routes/billing.route'));
 const webhook_route_1 = __importDefault(require('./routes/webhook.route'));
 const app = (0, express_1.default)();
+// app.use(
+//     cors({
+//         origin: [
+//             'http://localhost:5173', // Vite default
+//             'http://localhost:3000', // Create React App default
+//             'https://aifinance-five.vercel.app', // Your production URL
+//         ],
+//         methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+//         credentials: true, // Required if you are sending cookies/JWT in headers
+//     })
+// );
 const BASE_PATH = env_config_1.Env.BASE_PATH;
 app.use('/webhook', webhook_route_1.default);
 app.use(express_1.default.json());
@@ -40,7 +50,12 @@ app.use(
 app.get(
     '/',
     (0, asyncHandler_middlerware_1.asyncHandler)(async (req, res, next) => {
-        throw new app_error_1.BadRequestException('This is a test error');
+        res.status(200).json({
+            success: true,
+            message: 'Welcome to the Finance AI Service API',
+            version: '1.0.0',
+            status: 'Server is up and running',
+        });
     })
 );
 (0, scheduler_1.startJobs)();

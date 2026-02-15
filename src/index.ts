@@ -22,6 +22,17 @@ import billingRoutes from './routes/billing.route';
 import webhookRoutes from './routes/webhook.route';
 
 const app = express();
+// app.use(
+//     cors({
+//         origin: [
+//             'http://localhost:5173', // Vite default
+//             'http://localhost:3000', // Create React App default
+//             'https://aifinance-five.vercel.app', // Your production URL
+//         ],
+//         methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+//         credentials: true, // Required if you are sending cookies/JWT in headers
+//     })
+// );
 const BASE_PATH = Env.BASE_PATH;
 app.use('/webhook', webhookRoutes);
 app.use(express.json());
@@ -38,7 +49,12 @@ app.use(
 app.get(
     '/',
     asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-        throw new BadRequestException('This is a test error');
+        res.status(200).json({
+            success: true,
+            message: 'Welcome to the Finance AI Service API',
+            version: '1.0.0',
+            status: 'Server is up and running',
+        });
     })
 );
 startJobs();
