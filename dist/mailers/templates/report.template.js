@@ -1,29 +1,18 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.getReportEmailTemplate = void 0;
-const format_currency_1 = require('../../utils/format-currency');
-const helper_1 = require('../../utils/helper');
+const format_currency_1 = require("../../utils/format-currency");
+const helper_1 = require("../../utils/helper");
 const getReportEmailTemplate = (reportData, frequency) => {
-    const {
-        username,
-        period,
-        totalIncome,
-        totalExpenses,
-        availableBalance,
-        savingsRate,
-        topSpendingCategories,
-        insights,
-    } = reportData;
+    const { username, period, totalIncome, totalExpenses, availableBalance, savingsRate, topSpendingCategories, insights, } = reportData;
     const reportTitle = `${(0, helper_1.capitalizeFirstLetter)(frequency)} Report`;
     const categoryList = topSpendingCategories
-        .map(
-            cat => `<li>
+        .map((cat) => `<li>
       ${cat.name} - ${(0, format_currency_1.formatCurrency)(cat.amount)} (${cat.percent}%)
       </li>
-    `
-        )
+    `)
         .join('');
-    const insightsList = insights.map(insight => `<li>${insight}</li>`).join('');
+    const insightsList = insights.map((insight) => `<li>${insight}</li>`).join('');
     const currentYear = new Date().getFullYear();
     return `
   <!DOCTYPE html>

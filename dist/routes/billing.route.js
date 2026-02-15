@@ -1,19 +1,10 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
-const express_1 = require('express');
-const billing_controller_1 = require('../controllers/billing.controller');
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const billing_controller_1 = require("../controllers/billing.controller");
 const billingRoutes = (0, express_1.Router)();
-billingRoutes.post(
-    '/subscription/upgrade',
-    billing_controller_1.upgradeToProSubscriptionController
-);
-billingRoutes.post(
-    '/subscription/billing-portal',
-    billing_controller_1.manageSubscriptionBillingPortalController
-);
+billingRoutes.post('/subscription/upgrade', billing_controller_1.upgradeToProSubscriptionController);
+billingRoutes.post('/subscription/billing-portal', billing_controller_1.manageSubscriptionBillingPortalController);
 billingRoutes.get('/subscription/status', billing_controller_1.getUserSubscriptionStatusController);
-billingRoutes.post(
-    '/subscription/switch-plan',
-    billing_controller_1.switchToSubscriptionPlanController
-);
+billingRoutes.post('/subscription/switch-plan', billing_controller_1.switchToSubscriptionPlanController);
 exports.default = billingRoutes;

@@ -1,10 +1,10 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.calculateNextReportDate = calculateNextReportDate;
 exports.calculateNextOccurrence = calculateNextOccurrence;
 exports.capitalizeFirstLetter = capitalizeFirstLetter;
-const date_fns_1 = require('date-fns');
-const transaction_model_1 = require('../models/transaction.model');
+const date_fns_1 = require("date-fns");
+const transaction_model_1 = require("../models/transaction.model");
 function calculateNextReportDate(lastSentDate) {
     const now = new Date();
     const lastSent = lastSentDate || now;

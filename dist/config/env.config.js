@@ -1,7 +1,7 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.Env = void 0;
-const get_env_1 = require('../utils/get-env');
+const get_env_1 = require("../utils/get-env");
 const envConfig = () => ({
     NODE_ENV: (0, get_env_1.getEnv)('NODE_ENV', 'development'),
     PORT: (0, get_env_1.getEnv)('PORT', '8000'),

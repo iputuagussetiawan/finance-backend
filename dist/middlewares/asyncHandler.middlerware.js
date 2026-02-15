@@ -1,10 +1,11 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.asyncHandler = void 0;
-const asyncHandler = controller => async (req, res, next) => {
+const asyncHandler = (controller) => async (req, res, next) => {
     try {
         await controller(req, res, next);
-    } catch (error) {
+    }
+    catch (error) {
         next(error);
     }
 };

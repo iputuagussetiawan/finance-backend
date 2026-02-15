@@ -1,7 +1,7 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.planFeatures = void 0;
-const subscription_model_1 = require('../models/subscription.model');
+const subscription_model_1 = require("../models/subscription.model");
 exports.planFeatures = {
     [subscription_model_1.SubscriptionPlanEnum.MONTHLY]: [
         'Unlimited transactions',

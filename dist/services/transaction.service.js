@@ -1,35 +1,21 @@
-'use strict';
-var __importDefault =
-    (this && this.__importDefault) ||
-    function (mod) {
-        return mod && mod.__esModule ? mod : { default: mod };
-    };
-Object.defineProperty(exports, '__esModule', { value: true });
-exports.scanReceiptService =
-    exports.bulkTransactionService =
-    exports.bulkDeleteTransactionService =
-    exports.deleteTransactionService =
-    exports.updateTransactionService =
-    exports.duplicateTransactionService =
-    exports.getTransactionByIdService =
-    exports.getAllTransactionService =
-    exports.createTransactionService =
-        void 0;
-const axios_1 = __importDefault(require('axios'));
-const transaction_model_1 = __importDefault(require('../models/transaction.model'));
-const app_error_1 = require('../utils/app-error');
-const helper_1 = require('../utils/helper');
-const google_ai_config_1 = require('../config/google-ai.config');
-const genai_1 = require('@google/genai');
-const prompt_1 = require('../utils/prompt');
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.scanReceiptService = exports.bulkTransactionService = exports.bulkDeleteTransactionService = exports.deleteTransactionService = exports.updateTransactionService = exports.duplicateTransactionService = exports.getTransactionByIdService = exports.getAllTransactionService = exports.createTransactionService = void 0;
+const axios_1 = __importDefault(require("axios"));
+const transaction_model_1 = __importDefault(require("../models/transaction.model"));
+const app_error_1 = require("../utils/app-error");
+const helper_1 = require("../utils/helper");
+const google_ai_config_1 = require("../config/google-ai.config");
+const genai_1 = require("@google/genai");
+const prompt_1 = require("../utils/prompt");
 const createTransactionService = async (body, userId) => {
     let nextRecurringDate;
     const currentDate = new Date();
     if (body.isRecurring && body.recurringInterval) {
-        const calculatedDate = (0, helper_1.calculateNextOccurrence)(
-            body.date,
-            body.recurringInterval
-        );
+        const calculatedDate = (0, helper_1.calculateNextOccurrence)(body.date, body.recurringInterval);
         nextRecurringDate =
             calculatedDate < currentDate
                 ? (0, helper_1.calculateNextOccurrence)(currentDate, body.recurringInterval)
@@ -49,13 +35,12 @@ const createTransactionService = async (body, userId) => {
 };
 exports.createTransactionService = createTransactionService;
 const getAllTransactionService = async (
-    // ID of the user whose transactions will be fetched
-    userId,
-    // Filter options object
-    filters,
-    // Pagination configuration
-    pagination
-) => {
+// ID of the user whose transactions will be fetched
+userId, 
+// Filter options object
+filters, 
+// Pagination configuration
+pagination) => {
     // Destructure filter values for easier usage
     const { keyword, type, recurringStatus } = filters;
     // Base filter condition, always scoped to the user
@@ -92,8 +77,7 @@ const getAllTransactionService = async (
     // 1. Get paginated transactions
     // 2. Count total matching documents
     const [transactions, totalCount] = await Promise.all([
-        transaction_model_1.default
-            .find(filterConditions) // Apply filters
+        transaction_model_1.default.find(filterConditions) // Apply filters
             .skip(skip) // Skip records for pagination
             .limit(pageSize) // Limit number of records
             .sort({ createdAt: -1 }), // Sort by newest first
@@ -119,7 +103,8 @@ const getTransactionByIdService = async (userId, transactionId) => {
         _id: transactionId,
         userId,
     });
-    if (!transaction) throw new app_error_1.NotFoundException('Transaction not found');
+    if (!transaction)
+        throw new app_error_1.NotFoundException('Transaction not found');
     return transaction;
 };
 exports.getTransactionByIdService = getTransactionByIdService;
@@ -128,7 +113,8 @@ const duplicateTransactionService = async (userId, transactionId) => {
         _id: transactionId,
         userId,
     });
-    if (!transaction) throw new app_error_1.NotFoundException('Transaction not found');
+    if (!transaction)
+        throw new app_error_1.NotFoundException('Transaction not found');
     const duplicated = await transaction_model_1.default.create({
         ...transaction.toObject(),
         _id: undefined,
@@ -150,7 +136,8 @@ const updateTransactionService = async (userId, transactionId, body) => {
         _id: transactionId,
         userId,
     });
-    if (!existingTransaction) throw new app_error_1.NotFoundException('Transaction not found');
+    if (!existingTransaction)
+        throw new app_error_1.NotFoundException('Transaction not found');
     const now = new Date();
     const isRecurring = body.isRecurring ?? existingTransaction.isRecurring;
     const date = body.date !== undefined ? new Date(body.date) : existingTransaction.date;
@@ -159,9 +146,7 @@ const updateTransactionService = async (userId, transactionId, body) => {
     if (isRecurring && recurringInterval) {
         const calculatedDate = (0, helper_1.calculateNextOccurrence)(date, recurringInterval);
         nextRecurringDate =
-            calculatedDate < now
-                ? (0, helper_1.calculateNextOccurrence)(now, recurringInterval)
-                : calculatedDate;
+            calculatedDate < now ? (0, helper_1.calculateNextOccurrence)(now, recurringInterval) : calculatedDate;
     }
     existingTransaction.set({
         ...(body.title && { title: body.title }),
@@ -184,7 +169,8 @@ const deleteTransactionService = async (userId, transactionId) => {
         _id: transactionId,
         userId,
     });
-    if (!deleted) throw new app_error_1.NotFoundException('Transaction not found');
+    if (!deleted)
+        throw new app_error_1.NotFoundException('Transaction not found');
     return;
 };
 exports.deleteTransactionService = deleteTransactionService;
@@ -193,7 +179,8 @@ const bulkDeleteTransactionService = async (userId, transactionIds) => {
         _id: { $in: transactionIds },
         userId,
     });
-    if (result.deletedCount === 0) throw new app_error_1.NotFoundException('No transactions found');
+    if (result.deletedCount === 0)
+        throw new app_error_1.NotFoundException('No transactions found');
     return {
         success: true,
         deletedCount: result.deletedCount,
@@ -223,21 +210,25 @@ const bulkTransactionService = async (userId, transactions) => {
             insertedCount: result.insertedCount,
             success: true,
         };
-    } catch (error) {
+    }
+    catch (error) {
         throw error;
     }
 };
 exports.bulkTransactionService = bulkTransactionService;
-const scanReceiptService = async file => {
-    if (!file) throw new app_error_1.BadRequestException('No file uploaded');
+const scanReceiptService = async (file) => {
+    if (!file)
+        throw new app_error_1.BadRequestException('No file uploaded');
     try {
-        if (!file.path) throw new app_error_1.BadRequestException('failed to upload file');
+        if (!file.path)
+            throw new app_error_1.BadRequestException('failed to upload file');
         console.log(file.path);
         const responseData = await axios_1.default.get(file.path, {
             responseType: 'arraybuffer',
         });
         const base64String = Buffer.from(responseData.data).toString('base64');
-        if (!base64String) throw new app_error_1.BadRequestException('Could not process file');
+        if (!base64String)
+            throw new app_error_1.BadRequestException('Could not process file');
         const result = await google_ai_config_1.genAI.models.generateContent({
             model: google_ai_config_1.genAIModel,
             contents: [
@@ -272,7 +263,8 @@ const scanReceiptService = async file => {
             type: data.type,
             receiptUrl: file.path,
         };
-    } catch (error) {
+    }
+    catch (error) {
         return { error: 'Receipt scanning  service unavailable' };
     }
 };

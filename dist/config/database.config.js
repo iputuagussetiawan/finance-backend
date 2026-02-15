@@ -1,12 +1,10 @@
-'use strict';
-var __importDefault =
-    (this && this.__importDefault) ||
-    function (mod) {
-        return mod && mod.__esModule ? mod : { default: mod };
-    };
-Object.defineProperty(exports, '__esModule', { value: true });
-const mongoose_1 = __importDefault(require('mongoose'));
-const env_config_1 = require('./env.config');
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const mongoose_1 = __importDefault(require("mongoose"));
+const env_config_1 = require("./env.config");
 const connectDatabase = async () => {
     try {
         await mongoose_1.default.connect(env_config_1.Env.MONGO_URI, {
@@ -15,7 +13,8 @@ const connectDatabase = async () => {
             connectTimeoutMS: 30000,
         });
         console.log('Connected to MongoDB database');
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Error connecting to MongoDB database:', error);
         process.exit(1);
     }

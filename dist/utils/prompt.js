@@ -1,7 +1,7 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.reportInsightPrompt = exports.receiptPrompt = void 0;
-const transaction_model_1 = require('../models/transaction.model');
+const transaction_model_1 = require("../models/transaction.model");
 exports.receiptPrompt = `
 You are a financial assistant that helps users analyze and extract transaction details from receipt image (base64 encoded)
 Analyze this receipt image (base64 encoded) and extract transaction details matching this exact JSON format:
@@ -33,14 +33,7 @@ Example valid response:
   "type": "EXPENSE"
 }
 `;
-const reportInsightPrompt = ({
-    totalIncome,
-    totalExpenses,
-    availableBalance,
-    savingsRate,
-    categories,
-    periodLabel,
-}) => {
+const reportInsightPrompt = ({ totalIncome, totalExpenses, availableBalance, savingsRate, categories, periodLabel, }) => {
     const categoryList = Object.entries(categories)
         .map(([name, { amount, percentage }]) => `- ${name}: ${amount} (${percentage}%)`)
         .join('\n');

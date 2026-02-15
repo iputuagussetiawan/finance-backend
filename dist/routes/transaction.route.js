@@ -1,16 +1,12 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
-const express_1 = require('express');
-const transaction_controller_1 = require('../controllers/transaction.controller');
-const cloudinary_config_1 = require('../config/cloudinary.config');
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const transaction_controller_1 = require("../controllers/transaction.controller");
+const cloudinary_config_1 = require("../config/cloudinary.config");
 const transactionRoutes = (0, express_1.Router)();
 transactionRoutes.post('/create', transaction_controller_1.createTransactionController);
 transactionRoutes.post('/bulk-transaction', transaction_controller_1.bulkTransactionController);
-transactionRoutes.post(
-    '/scan-receipt',
-    cloudinary_config_1.upload.single('receipt'),
-    transaction_controller_1.scanReceiptController
-);
+transactionRoutes.post('/scan-receipt', cloudinary_config_1.upload.single('receipt'), transaction_controller_1.scanReceiptController);
 transactionRoutes.put('/duplicate/:id', transaction_controller_1.duplicateTransactionController);
 transactionRoutes.put('/update/:id', transaction_controller_1.updateTransactionController);
 transactionRoutes.get('/all', transaction_controller_1.getAllTransactionController);

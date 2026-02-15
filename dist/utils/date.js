@@ -1,8 +1,8 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDateRange = void 0;
-const date_fns_1 = require('date-fns');
-const date_range_enum_1 = require('../enums/date-range.enum');
+const date_fns_1 = require("date-fns");
+const date_range_enum_1 = require("../enums/date-range.enum");
 const getDateRange = (preset, customFrom, customTo) => {
     if (customFrom && customTo) {
         return {

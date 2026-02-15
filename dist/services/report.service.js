@@ -1,78 +1,53 @@
-'use strict';
-var __createBinding =
-    (this && this.__createBinding) ||
-    (Object.create
-        ? function (o, m, k, k2) {
-              if (k2 === undefined) k2 = k;
-              var desc = Object.getOwnPropertyDescriptor(m, k);
-              if (!desc || ('get' in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-                  desc = {
-                      enumerable: true,
-                      get: function () {
-                          return m[k];
-                      },
-                  };
-              }
-              Object.defineProperty(o, k2, desc);
-          }
-        : function (o, m, k, k2) {
-              if (k2 === undefined) k2 = k;
-              o[k2] = m[k];
-          });
-var __setModuleDefault =
-    (this && this.__setModuleDefault) ||
-    (Object.create
-        ? function (o, v) {
-              Object.defineProperty(o, 'default', { enumerable: true, value: v });
-          }
-        : function (o, v) {
-              o['default'] = v;
-          });
-var __importStar =
-    (this && this.__importStar) ||
-    (function () {
-        var ownKeys = function (o) {
-            ownKeys =
-                Object.getOwnPropertyNames ||
-                function (o) {
-                    var ar = [];
-                    for (var k in o)
-                        if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-                    return ar;
-                };
-            return ownKeys(o);
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
         };
-        return function (mod) {
-            if (mod && mod.__esModule) return mod;
-            var result = {};
-            if (mod != null)
-                for (var k = ownKeys(mod), i = 0; i < k.length; i++)
-                    if (k[i] !== 'default') __createBinding(result, mod, k[i]);
-            __setModuleDefault(result, mod);
-            return result;
-        };
-    })();
-var __importDefault =
-    (this && this.__importDefault) ||
-    function (mod) {
-        return mod && mod.__esModule ? mod : { default: mod };
+        return ownKeys(o);
     };
-Object.defineProperty(exports, '__esModule', { value: true });
-exports.generateReportService =
-    exports.updateReportSettingService =
-    exports.getAllReportsService =
-        void 0;
-const mongoose_1 = __importDefault(require('mongoose'));
-const report_setting_model_1 = __importDefault(require('../models/report-setting.model'));
-const report_model_1 = __importDefault(require('../models/report.model'));
-const transaction_model_1 = __importStar(require('../models/transaction.model'));
-const app_error_1 = require('../utils/app-error');
-const helper_1 = require('../utils/helper');
-const format_currency_1 = require('../utils/format-currency');
-const date_fns_1 = require('date-fns');
-const google_ai_config_1 = require('../config/google-ai.config');
-const genai_1 = require('@google/genai');
-const prompt_1 = require('../utils/prompt');
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.generateReportService = exports.updateReportSettingService = exports.getAllReportsService = void 0;
+const mongoose_1 = __importDefault(require("mongoose"));
+const report_setting_model_1 = __importDefault(require("../models/report-setting.model"));
+const report_model_1 = __importDefault(require("../models/report.model"));
+const transaction_model_1 = __importStar(require("../models/transaction.model"));
+const app_error_1 = require("../utils/app-error");
+const helper_1 = require("../utils/helper");
+const format_currency_1 = require("../utils/format-currency");
+const date_fns_1 = require("date-fns");
+const google_ai_config_1 = require("../config/google-ai.config");
+const genai_1 = require("@google/genai");
+const prompt_1 = require("../utils/prompt");
 const getAllReportsService = async (userId, pagination) => {
     const query = { userId };
     const { pageSize, pageNumber } = pagination;
@@ -100,17 +75,17 @@ const updateReportSettingService = async (userId, body) => {
     const existingReportSetting = await report_setting_model_1.default.findOne({
         userId,
     });
-    if (!existingReportSetting) throw new app_error_1.NotFoundException('Report setting not found');
+    if (!existingReportSetting)
+        throw new app_error_1.NotFoundException('Report setting not found');
     //   const frequency =
     //     existingReportSetting.frequency || ReportFrequencyEnum.MONTHLY;
     if (isEnabled) {
         const currentNextReportDate = existingReportSetting.nextReportDate;
         const now = new Date();
         if (!currentNextReportDate || currentNextReportDate <= now) {
-            nextReportDate = (0, helper_1.calculateNextReportDate)(
-                existingReportSetting.lastSentDate
-            );
-        } else {
+            nextReportDate = (0, helper_1.calculateNextReportDate)(existingReportSetting.lastSentDate);
+        }
+        else {
             nextReportDate = currentNextReportDate;
         }
     }
@@ -122,11 +97,8 @@ const updateReportSettingService = async (userId, body) => {
     await existingReportSetting.save();
 };
 exports.updateReportSettingService = updateReportSettingService;
-const generateReportService = async (
-    userId,
-    fromDateInput, // Accept either string or Date
-    toDateInput
-) => {
+const generateReportService = async (userId, fromDateInput, // Accept either string or Date
+toDateInput) => {
     const fromDate = new Date(fromDateInput);
     const toDate = new Date(toDateInput);
     if (isNaN(fromDate.getTime()) || isNaN(toDate.getTime())) {
@@ -148,12 +120,7 @@ const generateReportService = async (
                             totalIncome: {
                                 $sum: {
                                     $cond: [
-                                        {
-                                            $eq: [
-                                                '$type',
-                                                transaction_model_1.TransactionTypeEnum.INCOME,
-                                            ],
-                                        },
+                                        { $eq: ['$type', transaction_model_1.TransactionTypeEnum.INCOME] },
                                         { $abs: '$amount' },
                                         0,
                                     ],
@@ -162,12 +129,7 @@ const generateReportService = async (
                             totalExpenses: {
                                 $sum: {
                                     $cond: [
-                                        {
-                                            $eq: [
-                                                '$type',
-                                                transaction_model_1.TransactionTypeEnum.EXPENSE,
-                                            ],
-                                        },
+                                        { $eq: ['$type', transaction_model_1.TransactionTypeEnum.EXPENSE] },
                                         { $abs: '$amount' },
                                         0,
                                     ],
@@ -246,14 +208,7 @@ const generateReportService = async (
     };
 };
 exports.generateReportService = generateReportService;
-async function generateInsightsAI({
-    totalIncome,
-    totalExpenses,
-    availableBalance,
-    savingsRate,
-    categories,
-    periodLabel,
-}) {
+async function generateInsightsAI({ totalIncome, totalExpenses, availableBalance, savingsRate, categories, periodLabel, }) {
     try {
         const prompt = (0, prompt_1.reportInsightPrompt)({
             totalIncome: (0, format_currency_1.convertToDollarUnit)(totalIncome),
@@ -272,15 +227,18 @@ async function generateInsightsAI({
         });
         const response = result.text;
         const cleanedText = response?.replace(/```(?:json)?\n?/g, '').trim();
-        if (!cleanedText) return [];
+        if (!cleanedText)
+            return [];
         const data = JSON.parse(cleanedText);
         return data;
-    } catch (error) {
+    }
+    catch (error) {
         return [];
     }
 }
 function calculateSavingRate(totalIncome, totalExpenses) {
-    if (totalIncome <= 0) return 0;
+    if (totalIncome <= 0)
+        return 0;
     const savingRate = ((totalIncome - totalExpenses) / totalIncome) * 100;
     return parseFloat(savingRate.toFixed(2));
 }

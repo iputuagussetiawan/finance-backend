@@ -1,11 +1,11 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.errorHandler = void 0;
-const zod_1 = require('zod');
-const http_config_1 = require('../config/http.config');
-const app_error_1 = require('../utils/app-error');
-const error_code_enum_1 = require('../enums/error-code.enum');
-const multer_1 = require('multer');
+const zod_1 = require("zod");
+const http_config_1 = require("../config/http.config");
+const app_error_1 = require("../utils/app-error");
+const error_code_enum_1 = require("../enums/error-code.enum");
+const multer_1 = require("multer");
 const formatZodError = (res, error) => {
     const errors = error?.issues?.map(err => ({
         field: err.path.join('.'),
@@ -17,7 +17,7 @@ const formatZodError = (res, error) => {
         errorCode: error_code_enum_1.ErrorCodeEnum.VALIDATION_ERROR,
     });
 };
-const handleMulterError = error => {
+const handleMulterError = (error) => {
     const messages = {
         LIMIT_UNEXPECTED_FILE: "Invalid file field name. Please use 'file'",
         LIMIT_FILE_SIZE: 'File size exceeds the limit',

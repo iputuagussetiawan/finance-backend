@@ -1,73 +1,48 @@
-'use strict';
-var __createBinding =
-    (this && this.__createBinding) ||
-    (Object.create
-        ? function (o, m, k, k2) {
-              if (k2 === undefined) k2 = k;
-              var desc = Object.getOwnPropertyDescriptor(m, k);
-              if (!desc || ('get' in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-                  desc = {
-                      enumerable: true,
-                      get: function () {
-                          return m[k];
-                      },
-                  };
-              }
-              Object.defineProperty(o, k2, desc);
-          }
-        : function (o, m, k, k2) {
-              if (k2 === undefined) k2 = k;
-              o[k2] = m[k];
-          });
-var __setModuleDefault =
-    (this && this.__setModuleDefault) ||
-    (Object.create
-        ? function (o, v) {
-              Object.defineProperty(o, 'default', { enumerable: true, value: v });
-          }
-        : function (o, v) {
-              o['default'] = v;
-          });
-var __importStar =
-    (this && this.__importStar) ||
-    (function () {
-        var ownKeys = function (o) {
-            ownKeys =
-                Object.getOwnPropertyNames ||
-                function (o) {
-                    var ar = [];
-                    for (var k in o)
-                        if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-                    return ar;
-                };
-            return ownKeys(o);
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
         };
-        return function (mod) {
-            if (mod && mod.__esModule) return mod;
-            var result = {};
-            if (mod != null)
-                for (var k = ownKeys(mod), i = 0; i < k.length; i++)
-                    if (k[i] !== 'default') __createBinding(result, mod, k[i]);
-            __setModuleDefault(result, mod);
-            return result;
-        };
-    })();
-var __importDefault =
-    (this && this.__importDefault) ||
-    function (mod) {
-        return mod && mod.__esModule ? mod : { default: mod };
+        return ownKeys(o);
     };
-Object.defineProperty(exports, '__esModule', { value: true });
-exports.expensePieChartBreakdownService =
-    exports.chartAnalyticsService =
-    exports.summaryAnalyticsService =
-        void 0;
-const mongoose_1 = __importDefault(require('mongoose'));
-const date_range_enum_1 = require('../enums/date-range.enum');
-const transaction_model_1 = __importStar(require('../models/transaction.model'));
-const date_fns_1 = require('date-fns');
-const format_currency_1 = require('../utils/format-currency');
-const date_1 = require('../utils/date');
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.expensePieChartBreakdownService = exports.chartAnalyticsService = exports.summaryAnalyticsService = void 0;
+const mongoose_1 = __importDefault(require("mongoose"));
+const date_range_enum_1 = require("../enums/date-range.enum");
+const transaction_model_1 = __importStar(require("../models/transaction.model"));
+const date_fns_1 = require("date-fns");
+const format_currency_1 = require("../utils/format-currency");
+const date_1 = require("../utils/date");
 const summaryAnalyticsService = async (userId, dateRangePreset, customFrom, customTo) => {
     const range = (0, date_1.getDateRange)(dateRangePreset, customFrom, customTo);
     const { from, to, value: rangeValue } = range;
@@ -77,11 +52,11 @@ const summaryAnalyticsService = async (userId, dateRangePreset, customFrom, cust
                 userId: new mongoose_1.default.Types.ObjectId(userId),
                 ...(from &&
                     to && {
-                        date: {
-                            $gte: from,
-                            $lte: to,
-                        },
-                    }),
+                    date: {
+                        $gte: from,
+                        $lte: to,
+                    },
+                }),
             },
         },
         {
@@ -162,16 +137,10 @@ const summaryAnalyticsService = async (userId, dateRangePreset, customFrom, cust
         },
     ];
     const [current] = await transaction_model_1.default.aggregate(currentPeriodPipeline);
-    const {
-        totalIncome = 0,
-        totalExpenses = 0,
-        availableBalance = 0,
-        transactionCount = 0,
-        savingData = {
-            expenseRatio: 0,
-            savingsPercentage: 0,
-        },
-    } = current || {};
+    const { totalIncome = 0, totalExpenses = 0, availableBalance = 0, transactionCount = 0, savingData = {
+        expenseRatio: 0,
+        savingsPercentage: 0,
+    }, } = current || {};
     console.log(current, 'current');
     let percentageChange = {
         income: 0,
@@ -189,16 +158,9 @@ const summaryAnalyticsService = async (userId, dateRangePreset, customFrom, cust
         //last 30 days  previous las 30 days,
         const period = (0, date_fns_1.differenceInDays)(to, from) + 1;
         console.log(`${(0, date_fns_1.differenceInDays)(to, from)}`, period, 'period');
-        const isYearly = [
-            date_range_enum_1.DateRangeEnum.LAST_YEAR,
-            date_range_enum_1.DateRangeEnum.THIS_YEAR,
-        ].includes(rangeValue);
-        const prevPeriodFrom = isYearly
-            ? (0, date_fns_1.subYears)(from, 1)
-            : (0, date_fns_1.subDays)(from, period);
-        const prevPeriodTo = isYearly
-            ? (0, date_fns_1.subYears)(to, 1)
-            : (0, date_fns_1.subDays)(to, period);
+        const isYearly = [date_range_enum_1.DateRangeEnum.LAST_YEAR, date_range_enum_1.DateRangeEnum.THIS_YEAR].includes(rangeValue);
+        const prevPeriodFrom = isYearly ? (0, date_fns_1.subYears)(from, 1) : (0, date_fns_1.subDays)(from, period);
+        const prevPeriodTo = isYearly ? (0, date_fns_1.subYears)(to, 1) : (0, date_fns_1.subDays)(to, period);
         console.log(prevPeriodFrom, prevPeriodTo, 'Prev date');
         const prevPeriodPipeline = [
             {
@@ -269,15 +231,9 @@ const summaryAnalyticsService = async (userId, dateRangePreset, customFrom, cust
         percentageChange: {
             ...percentageChange,
             previousValues: {
-                incomeAmount: (0, format_currency_1.convertToDollarUnit)(
-                    percentageChange.previousValues.incomeAmount
-                ),
-                expenseAmount: (0, format_currency_1.convertToDollarUnit)(
-                    percentageChange.previousValues.expenseAmount
-                ),
-                balanceAmount: (0, format_currency_1.convertToDollarUnit)(
-                    percentageChange.previousValues.balanceAmount
-                ),
+                incomeAmount: (0, format_currency_1.convertToDollarUnit)(percentageChange.previousValues.incomeAmount),
+                expenseAmount: (0, format_currency_1.convertToDollarUnit)(percentageChange.previousValues.expenseAmount),
+                balanceAmount: (0, format_currency_1.convertToDollarUnit)(percentageChange.previousValues.balanceAmount),
             },
         },
         preset: {
@@ -295,11 +251,11 @@ const chartAnalyticsService = async (userId, dateRangePreset, customFrom, custom
         userId: new mongoose_1.default.Types.ObjectId(userId),
         ...(from &&
             to && {
-                date: {
-                    $gte: from,
-                    $lte: to,
-                },
-            }),
+            date: {
+                $gte: from,
+                $lte: to,
+            },
+        }),
     };
     const result = await transaction_model_1.default.aggregate([
         { $match: filter },
@@ -332,20 +288,12 @@ const chartAnalyticsService = async (userId, dateRangePreset, customFrom, custom
                 },
                 incomeCount: {
                     $sum: {
-                        $cond: [
-                            { $eq: ['$type', transaction_model_1.TransactionTypeEnum.INCOME] },
-                            1,
-                            0,
-                        ],
+                        $cond: [{ $eq: ['$type', transaction_model_1.TransactionTypeEnum.INCOME] }, 1, 0],
                     },
                 },
                 expenseCount: {
                     $sum: {
-                        $cond: [
-                            { $eq: ['$type', transaction_model_1.TransactionTypeEnum.EXPENSE] },
-                            1,
-                            0,
-                        ],
+                        $cond: [{ $eq: ['$type', transaction_model_1.TransactionTypeEnum.EXPENSE] }, 1, 0],
                     },
                 },
             },
@@ -379,7 +327,7 @@ const chartAnalyticsService = async (userId, dateRangePreset, customFrom, custom
         },
     ]);
     const resultData = result[0] || {};
-    const transaformedData = (resultData?.chartData || []).map(item => ({
+    const transaformedData = (resultData?.chartData || []).map((item) => ({
         date: item.date,
         income: (0, format_currency_1.convertToDollarUnit)(item.income),
         expenses: (0, format_currency_1.convertToDollarUnit)(item.expenses),
@@ -404,11 +352,11 @@ const expensePieChartBreakdownService = async (userId, dateRangePreset, customFr
         type: transaction_model_1.TransactionTypeEnum.EXPENSE,
         ...(from &&
             to && {
-                date: {
-                    $gte: from,
-                    $lte: to,
-                },
-            }),
+            date: {
+                $gte: from,
+                $lte: to,
+            },
+        }),
     };
     const pipleline = [
         {
@@ -492,7 +440,7 @@ const expensePieChartBreakdownService = async (userId, dateRangePreset, customFr
     };
     const transformedData = {
         totalSpent: (0, format_currency_1.convertToDollarUnit)(data.totalSpent),
-        breakdown: data.breakdown.map(item => ({
+        breakdown: data.breakdown.map((item) => ({
             ...item,
             value: (0, format_currency_1.convertToDollarUnit)(item.value),
         })),
@@ -508,7 +456,8 @@ const expensePieChartBreakdownService = async (userId, dateRangePreset, customFr
 };
 exports.expensePieChartBreakdownService = expensePieChartBreakdownService;
 function calaulatePercentageChange(previous, current) {
-    if (previous === 0) return current === 0 ? 0 : 100;
+    if (previous === 0)
+        return current === 0 ? 0 : 100;
     const changes = ((current - previous) / Math.abs(previous)) * 100;
     const cappedChange = Math.min(Math.max(changes, -100), 100);
     return parseFloat(cappedChange.toFixed(2));
