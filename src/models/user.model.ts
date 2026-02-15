@@ -1,11 +1,14 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { compareValue, hashValue } from '../utils/bcrypt';
+import './subscription.model';
 
 export interface UserDocument extends Document {
     name: string;
     email: string;
     password: string;
     profilePicture: string | null;
+    subscriptionId: mongoose.Types.ObjectId;
+    stripeCustomerId?: string;
     createdAt: Date;
     updatedAt: Date;
     comparePassword: (password: string) => Promise<boolean>;
@@ -35,6 +38,15 @@ const userSchema = new Schema<UserDocument>(
             select: true,
             required: true,
         },
+
+        subscriptionId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Subscription',
+        },
+        stripeCustomerId: {
+            type: String,
+            default: null,
+        },
     },
     {
         timestamps: true,
@@ -53,6 +65,7 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.omitPassword = function (): Omit<UserDocument, 'password'> {
     const userObject = this.toObject();
     delete userObject.password;
+    delete userObject.stripeCustomerId;
     return userObject;
 };
 

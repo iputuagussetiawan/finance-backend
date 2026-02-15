@@ -6,6 +6,11 @@ import ReportSettingModel, { ReportFrequencyEnum } from '../models/report-settin
 
 import { calculateNextReportDate } from '../utils/helper';
 import { signJwtToken } from '../utils/jwt';
+import { stripeClient } from '../config/stripe.config';
+import { Env } from '../config/env.config';
+import SubscriptionModel, { SubscriptionStatus } from '../models/subscription.model';
+
+const TRIAL_DAYS = Number(Env.TRIAL_DAYS);
 
 export const registerService = async (body: RegisterSchemaType) => {
     const { email } = body;
@@ -21,6 +26,49 @@ export const registerService = async (body: RegisterSchemaType) => {
                 ...body,
             });
 
+            await newUser.save({ session });
+
+            const customer = await stripeClient.customers.create({
+                email: newUser.email,
+                name: newUser.name,
+            });
+
+            newUser.stripeCustomerId = customer.id;
+
+            await newUser.save({ session });
+
+            const _userId = newUser.id.toString();
+            const ONE_MINUTES_IN_SECONDS = 1 * 60;
+            const trialEndDate = Math.floor(Date.now() / 1000) + ONE_MINUTES_IN_SECONDS;
+            const stripeSubscription = await stripeClient.subscriptions.create({
+                customer: customer.id,
+                items: [{ price: Env.STRIPE_MONTHLY_PLAN_PRICE_ID }],
+                trial_end: trialEndDate,
+                // trial_period_days: TRIAL_DAYS,
+                trial_settings: {
+                    end_behavior: {
+                        missing_payment_method: 'cancel',
+                    },
+                },
+                metadata: {
+                    userId: _userId,
+                },
+            });
+
+            const subscriptionDoc = new SubscriptionModel({
+                userId: newUser._id,
+                status: SubscriptionStatus.TRIALING,
+                plan: null,
+                stripeSubscriptionId: stripeSubscription.id,
+                stripePriceId: stripeSubscription.items.data[0].price.id,
+                trialStartsAt: new Date(stripeSubscription.trial_start! * 1000),
+                trialEndsAt: new Date(stripeSubscription.trial_end! * 1000),
+                trialDays: TRIAL_DAYS,
+            });
+
+            await subscriptionDoc.save({ session });
+
+            newUser.subscriptionId = subscriptionDoc._id as mongoose.Types.ObjectId;
             await newUser.save({ session });
 
             const reportSetting = new ReportSettingModel({
