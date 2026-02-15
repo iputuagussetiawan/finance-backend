@@ -50,7 +50,7 @@ export const getUserSubscriptionStatusService = async (userId: string) => {
             features: planFeatures[SubscriptionPlanEnum.MONTHLY],
         },
         [SubscriptionPlanEnum.YEARLY]: {
-            price: convertToDollarUnit(SubscriptionPriceEnum.MONTHLY),
+            price: convertToDollarUnit(SubscriptionPriceEnum.YEARLY),
             billing: 'year',
             savings: 'Save 17%',
             features: planFeatures[SubscriptionPlanEnum.YEARLY],
